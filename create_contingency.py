@@ -1,6 +1,6 @@
 import pandas as pd
 
-# Specifcy the file name 
+# Specify the file name 
 input_file_name = 'data'
 
 # Specify two categorical variable column names for contingency table

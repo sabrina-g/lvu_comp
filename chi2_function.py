@@ -10,7 +10,7 @@ def perform_chi2_test(input_file_name):
     # If there is a column for category labels, name it 'Category' 
     data = pd.read_csv('data/'+input_file_name+'.csv')
 
-    # Drops unecessary columns if any (e.g., category labels)
+    # Drops unnecessary columns if any (e.g., category labels)
     contingency_table = data.drop(columns=['Category']).values
 
     # Performs Chi-squared test

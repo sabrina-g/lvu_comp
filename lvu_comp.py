@@ -5,45 +5,34 @@ from scipy.stats import chi2_contingency
 
 def create_contingency_table(input_file_name, category_1, category_2):
   # Reads in data with specified file name
-  data = pd.read_csv('data/'+input_file_name+'.csv')
+  data = pd.read_csv('data/'+input_file_name+'.csv') # may want to read in data in separate function later
   
   # Creates contingency table with specified categorical variables
   contingency_table = pd.crosstab(data[category_1], data[category_2])
-
-  # Drops unecessary columns if any (e.g., category labels)
-  contingency_table = data.drop(columns=['Category']).values
-  
+   
   return contingency_table
 
-# Performs a chi square test on specified input file and categorical variables
+
+# Runs chi2 test on contingency table created from specified input file and categorical variables
 
 def lvu_chi2(input_file_name, category_1, category_2):
   # Creates contingency table
   contingency_table = create_contingency_table(input_file_name, category_1, category_2)
   
+  # Prints contingency table. Will replace with print function for all output later
+  print(contingency_table)
+ 
   # Performs Chi2 test
   chi2, p, dof, expected = chi2_contingency(contingency_table)
   
+  print(f"Chi2: {chi2}") # will replace with print function for all output later
+
   return chi2, p, dof, expected
 
 # Example usage:
-lvu_comparison = lvu_chi2('data', 'Category', 'LinkedStatus')
-print(lvu_comparison)
 
-
-#def lvu_chi2(contingency_table):
-  # Performs Chi2 test
- # chi2, p, dof, expected = chi2_contingency(contingency_table)
-  
-  #return chi2, p, dof, expected
-
-# Performs a chi square test on specified contingency table
-
-#def perform_chi2_test(contingency_table):
-  # Performs Chi2 test
- # chi2, p, dof, expected = chi2_contingency(contingency_table)
-  
- # return chi2, p, dof, expected
+test_chi2 = lvu_chi2('data', 'Category', 'LinkedStatus')
+#print(test_chi2)
 
 
 

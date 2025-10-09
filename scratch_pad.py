@@ -19,4 +19,5 @@ def create_contingency_table(input_file_name, category_1, category_2):
    
   return contingency_table
 
-contingency_table = create_contingency_table('data', 'Category', 'LinkedStatus')
+contingency_table = create_contingency_table('data3', 'Category', 'LinkedStatus')
+print(contingency_table)

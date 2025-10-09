@@ -6,5 +6,5 @@
 # df['Response'] = df['Response'].map({'yes': 1, 'no': 0})
 
 import pandas as pd
-input_file_name = 'effect_data'
+input_file_name = 'effect_data1'
 data = pd.read_csv('data/'+input_file_name+'.csv') # may want to read in data in separate function later

@@ -11,7 +11,7 @@ def create_contingency_table(input_file_name, category_1, category_2):
     contingency_table = pd.crosstab(data[category_1], data[category_2])
 
     # Saves contingency table to CSV
-    #contingency_table.to_csv('data/'+input_file_name+'_contingency_table.csv')
+    contingency_table.to_csv('data/'+input_file_name+'_contingency_table.csv')
 
     return contingency_table
 

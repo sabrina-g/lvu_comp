@@ -1,3 +1,10 @@
+# d = (p1 - p2) / sqrt((p1 * (1 - p1) + p2 * (1 - p2)) / 2)
+# where p1 and p2 are proportions
+# e.g., p of true matches from linked data nad p of missed matches from unlinked data
+
+# recode y and n into 1 and 0 if needed?
+# df['Response'] = df['Response'].map({'yes': 1, 'no': 0})
+
 import pandas as pd
 from scipy.stats import chi2_contingency
 
@@ -5,36 +12,11 @@ from scipy.stats import chi2_contingency
 
 def create_contingency_table(input_file_name, category_1, category_2):
   # Reads in data with specified file name
-  data = pd.read_csv('data/'+input_file_name+'.csv')
+  data = pd.read_csv('data/'+input_file_name+'.csv') # may want to read in data in separate function later
   
   # Creates contingency table with specified categorical variables
   contingency_table = pd.crosstab(data[category_1], data[category_2])
-
-  # Drops unecessary columns if any (e.g., category labels)
-  #contingency_table = data.drop(columns=['Category']).values
    
   return contingency_table
 
-#example_contingency = create_contingency_table('data', 'Category', 'LinkedStatus')
-
-#print(example_contingency)
-
-def lvu_chi2(input_file_name, category_1, category_2):
-  # Creates contingency table
-  contingency_table = create_contingency_table(input_file_name, category_1, category_2)
-  
-  print(contingency_table)
-  # this contigency table part is working fine as can print it out
-
-  # Performs Chi2 test
-  # This bit is causing a type error when I try to call the lvu_chi2 function
-  # problem was dropping columns in contingency table creation
-
-  chi2, p, dof, expected = chi2_contingency(contingency_table)
-  
-  print(f"Chi2: {chi2}")
-
-  return chi2, p, dof, expected
-
-test_chi2 = lvu_chi2('data', 'Category', 'LinkedStatus')
-#print(test_chi2)
+contingency_table = create_contingency_table('data', 'Category', 'LinkedStatus')

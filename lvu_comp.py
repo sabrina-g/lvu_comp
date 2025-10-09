@@ -5,7 +5,7 @@ from scipy.stats import chi2_contingency
 
 def create_contingency_table(input_file_name, category_1, category_2):
   # Reads in data with specified file name
-  data = pd.read_csv('data/'+input_file_name+'.csv') # may want to read in data in separate function later
+  data = pd.read_csv('data2/'+input_file_name+'.csv') # may want to read in data in separate function later
   
   # Creates contingency table with specified categorical variables
   contingency_table = pd.crosstab(data[category_1], data[category_2])
@@ -31,7 +31,7 @@ def lvu_chi2(input_file_name, category_1, category_2):
 
 # Example usage:
 
-test_chi2 = lvu_chi2('data', 'Category', 'LinkedStatus')
+test_chi2 = lvu_chi2('data2', 'Category', 'LinkedStatus')
 #print(test_chi2)
 
 

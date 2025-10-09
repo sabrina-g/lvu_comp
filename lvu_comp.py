@@ -15,7 +15,7 @@ def create_contingency_table(input_file_name, category_1, category_2):
 
 # Runs chi2 test on contingency table created from specified input file and categorical variables
 
-def lvu_chi2(input_file_name, category_1, category_2):
+def lvu_chi2(input_file_name, category_1, category_2): # would like users to be able to provide contigency table if they prefer to full data
   # Creates contingency table
   contingency_table = create_contingency_table(input_file_name, category_1, category_2)
   
@@ -31,7 +31,7 @@ def lvu_chi2(input_file_name, category_1, category_2):
 
 # Example usage:
 
-test_chi2 = lvu_chi2('data', 'Category', 'LinkedStatus')
+#test_chi2 = lvu_chi2('data2', 'Category', 'LinkedStatus')
 #print(test_chi2)
 
 

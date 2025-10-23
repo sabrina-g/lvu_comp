@@ -61,7 +61,7 @@ def get_proportions(linked_true_n, unlinked_false_n, linked_true_cat_n,
     prop_linked_true_cat = linked_true_cat_n / (linked_true_n)
 
     # Proportion of missed matches within specified category / overall missed matches
-    prop_unlinked_false_cat = unlinked_false_cat_n / (unlinked_false_cat_n)
+    prop_unlinked_false_cat = unlinked_false_cat_n / (unlinked_false_n)
 
     return prop_linked_true_cat, prop_unlinked_false_cat
     
@@ -86,3 +86,5 @@ print(f"Number of true matches in category {category}: {linked_true_cat_n}")
 print(f"Number of missed matches in category {category}: {unlinked_false_cat_n}")
 print(f"Number of linked records: {linked_n}")
 print(f"Proportion of true matches in category {category}: {prop_linked_true_cat}")
+
+print(linked_true_n)

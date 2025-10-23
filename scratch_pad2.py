@@ -24,12 +24,14 @@ def make_dfs(data, category):
     # Create separate df of Missed matches within specified category
     df_unlinked_false_cat = df_unlinked_false[df_unlinked_false['Category'] == category]
 
-    return df_linked, df_unlinked, df_linked_true, df_unlinked_false, df_linked_true_cat, df_unlinked_false_cat
+    return (df_linked, df_unlinked, df_linked_true, df_unlinked_false, 
+            df_linked_true_cat, df_unlinked_false_cat)
 
 # Function to get counts needed for proportions
 # Need to add a check so it doesn't try to divide by zero later
 
-def get_counts(df_linked, df_unlinked, df_linked_true, df_unlinked_false, df_linked_true_cat, df_unlinked_false_cat):
+def get_counts(df_linked, df_unlinked, df_linked_true, df_unlinked_false, 
+               df_linked_true_cat, df_unlinked_false_cat):
 
     # Numbers of linked and unlinked records
     linked_n = len(df_linked)
@@ -47,11 +49,13 @@ def get_counts(df_linked, df_unlinked, df_linked_true, df_unlinked_false, df_lin
     # Number of missed matches within specified category
     unlinked_false_cat_n = len(df_unlinked_false_cat)
 
-    return linked_n, unlinked_n, linked_true_n, unlinked_false_n, linked_true_cat_n, unlinked_false_cat_n
+    return (linked_n, unlinked_n, linked_true_n, unlinked_false_n, linked_true_cat_n, 
+            unlinked_false_cat_n)
 
 # Function to get proportions needed for d statistic
 
-def get_proportions(linked_true_n, unlinked_false_n, linked_true_cat_n, unlinked_false_cat_n):
+def get_proportions(linked_true_n, unlinked_false_n, linked_true_cat_n, 
+                    unlinked_false_cat_n):
 
     # Proportion of true matches within specified category / overall true matches
     prop_linked_true_cat = linked_true_cat_n / (linked_true_n)
@@ -64,10 +68,20 @@ def get_proportions(linked_true_n, unlinked_false_n, linked_true_cat_n, unlinked
 
 # Example usages of make_dfs, get_counts, and get_proportions functions
 
-df_linked, df_unlinked, df_linked_true, df_unlinked_false, df_linked_true_cat, df_unlinked_false_cat = make_dfs(data, category)
-linked_n, unlinked_n, linked_true_n, unlinked_false_n, linked_true_cat_n, unlinked_false_cat_n = get_counts(df_linked, df_unlinked, df_linked_true, df_unlinked_false, df_linked_true_cat, df_unlinked_false_cat)
-prop_linked_true_cat, prop_unlinked_false_cat = get_proportions(linked_true_n, unlinked_false_n, linked_true_cat_n, unlinked_false_cat_n)
+(df_linked, df_unlinked, df_linked_true, df_unlinked_false, df_linked_true_cat,
+  df_unlinked_false_cat) = make_dfs(data, category)
 
+(linked_n, unlinked_n, linked_true_n, unlinked_false_n, linked_true_cat_n,
+  unlinked_false_cat_n) = get_counts(df_linked, df_unlinked, df_linked_true, 
+                                     df_unlinked_false, df_linked_true_cat, 
+                                     df_unlinked_false_cat)
+
+prop_linked_true_cat, prop_unlinked_false_cat = get_proportions(linked_true_n, 
+                                                                unlinked_false_n, 
+                                                                linked_true_cat_n, 
+                                                                unlinked_false_cat_n)
+
+# Printing stuff for sense checking
 print(f"Number of true matches in category {category}: {linked_true_cat_n}")
 print(f"Number of missed matches in category {category}: {unlinked_false_cat_n}")
 print(f"Number of linked records: {linked_n}")

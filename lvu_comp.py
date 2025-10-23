@@ -27,7 +27,7 @@ def lvu_chi2(input_file_name, category_1, category_2):
   # Performs Chi2 test
   chi2, p, dof, expected = chi2_contingency(contingency_table)
   
-  print(f"Chi2: {chi2}") # will replace with print function for all output later
+  #print(f"Chi2: {chi2}") # will replace with print function for all output later
 
   return chi2, p, dof, expected, contingency_table
 
@@ -35,7 +35,5 @@ def lvu_chi2(input_file_name, category_1, category_2):
 
 test_chi2 = lvu_chi2('data2', 'Category', 'LinkedStatus')
 print(test_chi2)
-
-
 
 

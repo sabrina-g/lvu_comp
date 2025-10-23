@@ -1,6 +1,6 @@
 # d = (p1 - p2) / sqrt((p1 * (1 - p1) + p2 * (1 - p2)) / 2)
 # where p1 and p2 are proportions
-# e.g., p of true matches from linked data nad p of missed matches from unlinked data
+# e.g., p of true matches from linked data and p of missed matches from unlinked data
 
 # recode y and n into 1 and 0 if needed?
 # df['Response'] = df['Response'].map({'yes': 1, 'no': 0})

@@ -71,7 +71,8 @@ def lvu_effect_size(data, category):
             prop_linked_true_cat, prop_unlinked_false_cat)
 
 # Example usage
-d, linked_n, unlinked_n, linked_true_n, unlinked_false_n, linked_true_cat_n, unlinked_false_cat_n, prop_linked_true_cat, prop_unlinked_false_cat = lvu_effect_size(data, category)
+(d, linked_n, unlinked_n, linked_true_n, unlinked_false_n, linked_true_cat_n, unlinked_false_cat_n, 
+ prop_linked_true_cat, prop_unlinked_false_cat) = lvu_effect_size(data, category)
 
 print(linked_true_n)
 print(linked_true_cat_n)

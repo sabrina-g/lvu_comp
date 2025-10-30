@@ -31,10 +31,12 @@ def get_proportions(linked_true_n, unlinked_false_n, linked_true_cat_n,
                     unlinked_false_cat_n):
 
     # Calculate proportion of true matches in a category / all true matches
-    prop_linked_true_cat = linked_true_cat_n / (linked_true_n)
+    prop_linked_true_cat = linked_true_cat_n / \
+        (linked_true_n) if linked_true_n > 0 else 0
 
     # Calculate proportion of missed matches in a category / all missed matches
-    prop_unlinked_false_cat = unlinked_false_cat_n / (unlinked_false_n)
+    prop_unlinked_false_cat = unlinked_false_cat_n / \
+        (unlinked_false_n) if unlinked_false_n > 0 else 0
 
     return prop_linked_true_cat, prop_unlinked_false_cat
 

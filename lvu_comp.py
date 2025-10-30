@@ -34,7 +34,7 @@ def lvu_chi2(input_file_name, category_1, category_2):
   return chi2, p, dof, expected, contingency_table
 
 
-# Function to calculate counts needed for proportions and d statistic
+# Function to calculate counts needed for proportions and effect size
 # To use with lvu_effect_size function
 
 def get_counts(data, category):
@@ -55,7 +55,7 @@ def get_counts(data, category):
     return (linked_n, unlinked_n, linked_true_n, unlinked_false_n,
             linked_true_cat_n, unlinked_false_cat_n)
 
-# Function to calculate proportions needed for d statistic
+# Function to calculate proportions needed for effect size
 # To use with lvu_effect_size function
 
 def get_proportions(linked_true_n, unlinked_false_n, linked_true_cat_n,
@@ -71,7 +71,7 @@ def get_proportions(linked_true_n, unlinked_false_n, linked_true_cat_n,
 
     return prop_linked_true_cat, prop_unlinked_false_cat
 
-# Function to calculate d statistic
+# Function to calculate effect size
 # To use with lvu_effect_size function
 
 def calculate_d(prop_linked_true_cat, prop_unlinked_false_cat):
@@ -83,7 +83,7 @@ def calculate_d(prop_linked_true_cat, prop_unlinked_false_cat):
     
     return d
 
-# Main function to get effect size d statistic
+# Main function to get effect size 
 
 def lvu_effect_size(data, category):
 

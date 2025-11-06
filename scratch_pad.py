@@ -21,7 +21,7 @@ def create_contingency_table(input_file_name, category_1, category_2):
 def lvu_chi2_output(chi2, p, dof, input_file_name):
     
     # Define output file name
-    chi2_output_file_name = +input_file_name+'_output.csv'
+    chi2_output_file_name = input_file_name+'_output.csv'
     output_folder = 'output'
 
     
@@ -43,7 +43,8 @@ def lvu_chi2_output(chi2, p, dof, input_file_name):
         writer = csv.writer(file)
         writer.writerow(headers)
         writer.writerow(values)
-
+        
+    return
 
 # Main function to run chi2 test on contingency table created from specified input 
 # file and categorical variables
@@ -64,5 +65,7 @@ def lvu_chi2(input_file_name, category_1, category_2):
 
   return chi2, p, dof, expected, contingency_table
 
+# example usage
 
+chi2, p, dof, expected, contingency_table = lvu_chi2('data2', 'Category', 'LinkedStatus')
 

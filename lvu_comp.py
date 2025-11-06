@@ -80,6 +80,7 @@ def lvu_chi2(input_file_name, category_1, category_2):
 
 # Function to calculate counts needed for proportions and effect size
 # To use with lvu_effect_size function
+# The data will likely come from 2 separate files for each error type bc of how the clerical review happens
 
 def get_counts(data, category):
 

@@ -65,9 +65,6 @@ def lvu_chi2(input_file_name, category_1, category_2):
   # Creates contingency table
   contingency_table = create_contingency_table(input_file_name, category_1, category_2)
   
-  # Prints contingency table. Will replace with print function for all output later
-  print(contingency_table)
- 
   # Performs Chi2 test
   chi2, p, dof, expected = chi2_contingency(contingency_table)
 

@@ -18,32 +18,29 @@ def create_contingency_table(input_file_name, category_1, category_2):
    
   return contingency_table
 
-def lvu_chi2_output(chi2, p, dof, input_file_name):
+def lvu_chi2_output(chi2, p, dof, input_file_name, contingency_table):
     
     # Define output file name
-    chi2_output_file_name = input_file_name+'_output.csv'
-    output_folder = 'output'
+    chi2_results_file_name = input_file_name+'_chi2_results.csv'
+    contingency_table_file_name = input_file_name+'_contingency_table.csv'
+    output_folder = input_file_name+'output'
 
-    
+    # Make a directory for specified data set if it does not exist already
     os.makedirs(output_folder, exist_ok=True)
-    output_path = os.path.join(output_folder, chi2_output_file_name)
 
+    # Define file path for chi2 results
+    chi2_results_path = os.path.join(output_folder, chi2_results_file_name)
 
-    # Define the headers and corresponding values
-    headers = [
-        "Chi Square", "P value", "Degrees of Freedom"
-    ]
-    values = [
-        chi2, p, dof
-    ]
+    # Define the headers and corresponding values for chi2 results
+    headers = ["Chi Square", "P value", "Degrees of Freedom"]
+    values = [chi2, p, dof]
 
-    # Write to CSV
-    
-    with open(output_path, mode='w', newline='') as file:
+    # Write chi2 results to CSV    
+    with open(chi2_results_path, mode='w', newline='') as file:
         writer = csv.writer(file)
         writer.writerow(headers)
         writer.writerow(values)
-        
+
     return
 
 # Main function to run chi2 test on contingency table created from specified input 
@@ -61,7 +58,7 @@ def lvu_chi2(input_file_name, category_1, category_2):
   chi2, p, dof, expected = chi2_contingency(contingency_table)
 
   # Creates output file for chi2 results
-  chi2, p, dof = lvu_chi2_output(chi2, p, dof, input_file_name)
+  lvu_chi2_output(chi2, p, dof, input_file_name, contingency_table)
 
   return chi2, p, dof, expected, contingency_table
 

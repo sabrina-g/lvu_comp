@@ -12,12 +12,12 @@ input_file_name = 'effect_data1'
 data = pd.read_csv('data/'+input_file_name+'.csv')
 category = 1
 
-(stdiff, linked_n, unlinked_n, linked_true_n, unlinked_true_n, linked_true_cat_n, unlinked_true_cat_n, 
+(stdiff_missed, stdiff_false, linked_n, unlinked_n, linked_true_n, unlinked_true_n, linked_true_cat_n, unlinked_true_cat_n, 
  prop_linked_true_cat, prop_unlinked_true_cat) = lvu_effect_size(data, category)
 
 print(f"True matches: {linked_true_n}")
 print(f"True matches for Category = {category}: {linked_true_cat_n}")
 print(f"Missed matches: {unlinked_true_n}")
 print(f"Missed matches for Category = {category}: {unlinked_true_cat_n}")
-print(f"Standard difference between true matches and missed matches: {stdiff}")
+print(f"Standard difference between true matches and missed matches: {stdiff_missed}")
 

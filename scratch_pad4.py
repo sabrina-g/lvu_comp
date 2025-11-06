@@ -55,23 +55,17 @@ def get_proportions(linked_true_n, linked_false_n, unlinked_true_n, linked_true_
 # Function to calculate effect size
 # To use with lvu_effect_size function
 
-def calculate_stdiff(prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat):
+def calculate_stdiff(p1, p2):
 
     # stdiff = (p1 - p2) / sqrt((p1 * (1 - p1) + p2 * (1 - p2)) / 2)
     # where p1 = prop_linked_true_cat and p2 = EITHER prop_linked_false_cat 
     # OR prop_unlinked_true_cat
 
-    # Calculate standard difference for false matches
-    stdiff_false = (prop_linked_true_cat - prop_linked_false_cat) / \
-    (( (prop_linked_true_cat * (1 - prop_linked_true_cat) +
-        prop_linked_false_cat * (1 - prop_linked_false_cat)) / 2) ** 0.5)
-
-    # Calculate standard difference for missed matches
-    stdiff_missed = (prop_linked_true_cat - prop_unlinked_true_cat) / \
-    (( (prop_linked_true_cat * (1 - prop_linked_true_cat) + 
-        prop_unlinked_true_cat * (1 - prop_unlinked_true_cat)) / 2) ** 0.5)
-    
-    return stdiff_missed, stdiff_false
+    # Calculate standard difference
+    stdiff = (p1 - p2) / (( (p1 * (1 - p1) + \
+        p2 * (1 - p2)) / 2) ** 0.5)
+     
+    return stdiff
 
 # Main function to get effect sizes 
 

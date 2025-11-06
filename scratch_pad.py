@@ -18,11 +18,12 @@ def create_contingency_table(input_file_name, category_1, category_2):
    
   return contingency_table
 
-def lvu_chi2_output(chi2, p, dof, input_file_name, contingency_table):
-    
+def lvu_chi2_output(chi2, p, dof, input_file_name, contingency_table, expected):  
+
     # Define output file name
     chi2_results_file_name = input_file_name+'_chi2_results.csv'
     contingency_table_file_name = input_file_name+'_contingency_table.csv'
+    expected_frequencies_file_name = input_file_name+'_expected_frequencies.csv'
     output_folder = input_file_name+'_output'
 
     # Make a directory for specified data set if it does not exist already
@@ -46,7 +47,14 @@ def lvu_chi2_output(chi2, p, dof, input_file_name, contingency_table):
 
     # Write contingency table to CSV
     contingency_table.to_csv(contingency_table_path)
+
+    # Define file path for expected frequencies
+    expected_frequencies_path = os.path.join(output_folder, expected_frequencies_file_name)
+
+    # Write expected frequencies to CSV
+    pd.DataFrame(expected).to_csv(expected_frequencies_path)
     
+
     return
 
 # Main function to run chi2 test on contingency table created from specified input 
@@ -64,7 +72,7 @@ def lvu_chi2(input_file_name, category_1, category_2):
   chi2, p, dof, expected = chi2_contingency(contingency_table)
 
   # Creates output file for chi2 results
-  lvu_chi2_output(chi2, p, dof, input_file_name, contingency_table)
+  lvu_chi2_output(chi2, p, dof, input_file_name, contingency_table, expected)
 
   return chi2, p, dof, expected, contingency_table
 

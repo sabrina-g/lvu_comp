@@ -23,7 +23,7 @@ def lvu_chi2_output(chi2, p, dof, input_file_name, contingency_table):
     # Define output file name
     chi2_results_file_name = input_file_name+'_chi2_results.csv'
     contingency_table_file_name = input_file_name+'_contingency_table.csv'
-    output_folder = input_file_name+'output'
+    output_folder = input_file_name+'_output'
 
     # Make a directory for specified data set if it does not exist already
     os.makedirs(output_folder, exist_ok=True)
@@ -41,6 +41,12 @@ def lvu_chi2_output(chi2, p, dof, input_file_name, contingency_table):
         writer.writerow(headers)
         writer.writerow(values)
 
+    # Define file path for contingency table
+    contingency_table_path = os.path.join(output_folder, contingency_table_file_name)
+
+    # Write contingency table to CSV
+    contingency_table.to_csv(contingency_table_path)
+    
     return
 
 # Main function to run chi2 test on contingency table created from specified input 

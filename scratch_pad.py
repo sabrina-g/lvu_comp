@@ -73,7 +73,7 @@ def calculate_stdiff(p1, p2):
 
 # Function to create and save output .csv file for effect size results
 
-def lvu_effect_output(data, category, input_file_name, linked_n, unlinked_n, linked_true_n, linked_false_n,
+def lvu_effect_output(input_file_name, category, linked_n, unlinked_n, linked_true_n, linked_false_n,
               unlinked_true_n, linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n,
               prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat,
               stdiff_false, stdiff_missed
@@ -96,7 +96,7 @@ def lvu_effect_output(data, category, input_file_name, linked_n, unlinked_n, lin
                     "Prop_False_in_Category", "Prop_Missed_in_Category", "Std_Diff_False",
                     "Std_Diff_Missed"
                         ]
-    values = [data, category, linked_n, unlinked_n, linked_true_n, linked_false_n,
+    values = [input_file_name, category, linked_n, unlinked_n, linked_true_n, linked_false_n,
               unlinked_true_n, linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n,
               prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat,
               stdiff_false, stdiff_missed
@@ -112,7 +112,10 @@ def lvu_effect_output(data, category, input_file_name, linked_n, unlinked_n, lin
 
 # Main function to get effect sizes 
 
-def lvu_effect_size(data, category):
+def lvu_effect_size(input_file_name, category):
+
+    # Reads in data with specified file name
+    data = pd.read_csv('data/'+input_file_name+'.csv') 
 
     # Get counts
     (linked_n, unlinked_n, linked_true_n, linked_false_n, unlinked_true_n,
@@ -130,7 +133,7 @@ def lvu_effect_size(data, category):
 
     # Create output for effect size
 
-    lvu_effect_output(data, category, input_file_name, linked_n, unlinked_n, linked_true_n, linked_false_n,
+    lvu_effect_output(input_file_name, category, linked_n, unlinked_n, linked_true_n, linked_false_n,
               unlinked_true_n, linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n,
               prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat,
               stdiff_false, stdiff_missed
@@ -139,3 +142,10 @@ def lvu_effect_size(data, category):
     return (stdiff_false, stdiff_missed, linked_n, unlinked_n, linked_true_n, linked_false_n, unlinked_true_n,
             linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n,
             prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat)
+
+
+(stdiff_false, stdiff_missed, linked_n, unlinked_n, linked_true_n, linked_false_n, unlinked_true_n, 
+    linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n,
+    prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat) = lvu_effect_size(
+        input_file_name = "effect_data1", category = 1)
+

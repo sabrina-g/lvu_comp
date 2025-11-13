@@ -89,7 +89,7 @@ def lvu_effect_output(input_file_name, category, linked_n, unlinked_n, linked_tr
     # Define file path for effect size results
     lvu_effect_results_path = os.path.join(output_folder, lvu_effect_results_file_name)
 
-    # Create the headers and values for the output file
+    # Create the dataframe for the output file
     headers = ["Dataset", "Category", "Linked_Records", "Unlinked_Records", 
                     "Correct_Matches", "False_Matches", "Missed_Matches", "Correct_in_Category",
                     "False_in_Category", "Missed_in_Category", "Prop_Correct_in_Category",
@@ -102,11 +102,10 @@ def lvu_effect_output(input_file_name, category, linked_n, unlinked_n, linked_tr
               stdiff_false, stdiff_missed
              ]
     
-    # Write lvu_effect results to CSV    
-    with open(lvu_effect_results_path, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(headers)
-        writer.writerow(values)
+    df = pd.DataFrame([values], columns=headers)
+
+    # Save the dataframe as a .csv file in output folder
+    df.to_csv(lvu_effect_results_path, index=False)
     
     return 
 

@@ -102,6 +102,9 @@ def lvu_effect_output(input_file_name, category, linked_n, unlinked_n, linked_tr
               stdiff_false, stdiff_missed
              ]
     
+    # Rounds the proportions and effect sizes to 6 decimal places
+    values = [round(v, 6) if isinstance(v, float) else v for v in values]
+
     df = pd.DataFrame([values], columns=headers)
 
     # Save the dataframe as a .csv file in output folder

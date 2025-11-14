@@ -107,20 +107,3 @@ print(f"Missed matches for Category = {category}: {unlinked_true_cat_n}")
 print(f"Standard difference between true matches and missed matches: {stdiff_missed}")
 
 
-'''
- # Converts all numeric values to float
-    # Might not need this as problem it's trying to solve isn't fixed by it
-    
-    for i in range(2, len(values)):
-        try:
-            values[i] = float(values[i])  # or int if you know they are integers
-        except ValueError:
-            values[i] = None  # Handle non-numeric values gracefully
-
-    
-    # Write lvu_effect results to CSV    
-    with open(lvu_effect_results_path, mode='w', newline='', encoding="utf-8") as file:
-        writer = csv.writer(file)
-        writer.writerow(headers)
-        writer.writerow(values)
-        '''

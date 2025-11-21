@@ -179,13 +179,57 @@ def calculate_stdiff(p1, p2):
      
     return stdiff
 
+# Function to create and save output .csv file for effect size results
+
+def lvu_effect_output(input_file_name, category, linked_n, unlinked_n, linked_true_n, linked_false_n,
+              unlinked_true_n, linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n,
+              prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat,
+              stdiff_false, stdiff_missed
+             ):
+    
+    # Define output file name
+    lvu_effect_results_file_name = input_file_name+'_effect_size_results.csv'
+
+    # Make a directory for specified data set if it does not exist already
+    output_folder = input_file_name+'_output'
+    os.makedirs(output_folder, exist_ok=True)
+
+    # Define file path for effect size results
+    lvu_effect_results_path = os.path.join(output_folder, lvu_effect_results_file_name)
+
+    # Create the dataframe for the output file
+    headers = ["Dataset", "Category", "Linked_Records", "Unlinked_Records", 
+                    "Correct_Matches", "False_Matches", "Missed_Matches", "Correct_in_Category",
+                    "False_in_Category", "Missed_in_Category", "Prop_Correct_in_Category",
+                    "Prop_False_in_Category", "Prop_Missed_in_Category", "Std_Diff_False",
+                    "Std_Diff_Missed"
+                        ]
+    values = [input_file_name, category, linked_n, unlinked_n, linked_true_n, linked_false_n,
+              unlinked_true_n, linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n,
+              prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat,
+              stdiff_false, stdiff_missed
+             ]
+    
+    # Rounds the proportions and effect sizes to 6 decimal places
+    values = [round(v, 6) if isinstance(v, float) else v for v in values]
+
+    df = pd.DataFrame([values], columns=headers)
+
+    # Save the dataframe as a .csv file in output folder
+    df.to_csv(lvu_effect_results_path, index=False)
+    
+    return 
+
 # Main function to get effect sizes 
 
-def lvu_effect_size(data, category):
+def lvu_effect_size(input_file_name, category):
+
+    # Reads in data with specified file name
+    data = pd.read_csv('data/'+input_file_name+'.csv') 
 
     # Get counts
     (linked_n, unlinked_n, linked_true_n, linked_false_n, unlinked_true_n,
-     linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n) = get_counts(data, category)
+        linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n) = get_counts(data, category)
 
     # Get proportions
     prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat = get_proportions(
@@ -196,6 +240,14 @@ def lvu_effect_size(data, category):
 
     stdiff_false = calculate_stdiff(prop_linked_true_cat, prop_linked_false_cat)
     stdiff_missed = calculate_stdiff(prop_linked_true_cat, prop_unlinked_true_cat)
+
+    # Create output for effect size
+
+    lvu_effect_output(input_file_name, category, linked_n, unlinked_n, linked_true_n, linked_false_n,
+              unlinked_true_n, linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n,
+              prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat,
+              stdiff_false, stdiff_missed
+             )
 
     return (stdiff_false, stdiff_missed, linked_n, unlinked_n, linked_true_n, linked_false_n, unlinked_true_n,
             linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n,

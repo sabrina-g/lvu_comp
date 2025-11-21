@@ -63,6 +63,37 @@ def lvu_chi2_output(chi2, p, dof, input_file_name, contingency_table, expected):
 # would like users to be able to provide contigency table if they prefer to full data
 
 def lvu_chi2(input_file_name, category_1, category_2): 
+  '''
+  Performs Chi2 test on contingency table created from specified input file and categorical variables.
+
+  Parameters:
+    input_file_name (str): Name of the input CSV file (without .csv extension) located in the 'data' directory.
+    category_1 (str): Name of the first categorical variable/column in the data.
+    category_2 (str): Name of the second categorical variable/column in the data.
+
+  Returns:
+    chi2 (float): The Chi-squared statistic.
+    p (float): The p-value of the test.
+    dof (int): Degrees of freedom.
+    expected (ndarray): The expected frequencies table.
+    contingency_table (DataFrame): The contingency table used in the test.
+
+  Creates an output directory and saves the following .csv files:
+    <input_file_name>_chi2_results: saves chi2, p-value, degrees of freedom
+    <input_file_name>_contingency_table: saves the contingency table
+    <input_file_name>_expected_frequencies: saves the expected frequencies table 
+
+  Input data should have at least 2 categorical variables/columns for analysis.
+    - Input data can be int (e.g., 0/1) or string (e.g., 'Linked'/'Unlinked').
+    - One of the columns should represent the linked status (whether the data in that
+    row were linked or not linked). 
+    - The other column(s) should represent categorical variables of interest to
+    investigate for potential bias.
+    - The method will ignore any columns not specified in the function call.
+
+ Method assumes no missing values in the specified categorical variables/columns.
+
+    '''
   # Creates contingency table
   contingency_table = create_contingency_table(input_file_name, category_1, category_2)
   

@@ -5,149 +5,103 @@ import pandas as pd
 from scipy.stats import chi2_contingency
 
 
-def get_counts(data, category):
+def create_contingency_table(input_file_name, category_1, category_2):
+  # Reads in data with specified file name
+  data = pd.read_csv('data/'+input_file_name+'.csv') 
+  
+  # Creates contingency table with specified categorical variables
+  contingency_table = pd.crosstab(data[category_1], data[category_2])
+   
+  return contingency_table
 
-    # Calculate counts of linked/unlinked, true/missed matches, and category-specific counts
-    linked_n = len(data[data['LinkedStatus'] == 1])
-    unlinked_n = len(data[data['LinkedStatus'] == 0])
+# Creates a directory and output files for chi2 test results
+# To use in lvu_chi2 function
 
-    # true matches
-    linked_true_n = len(data[(data['LinkedStatus'] == 1) & (data['LinkTruth'] == 1)])
+def lvu_chi2_output(chi2, p, dof, input_file_name, contingency_table, expected):  
 
-    # false matches: did link (LinkStatus = 1) but should not have (LinkTruth = 0)
-    linked_false_n = len(data[(data['LinkedStatus'] == 1) & (data['LinkTruth'] == 0)])
-    
-    # missed matches: did not link (LinkStatus = 0) but should have (LinkTruth = 1)
-    unlinked_true_n = len(data[(data['LinkedStatus'] == 0) & (data['LinkTruth'] == 1)])
-
-    # true matches in category
-    linked_true_cat_n = len(data[(data['LinkedStatus'] == 1) & (data['LinkTruth'] == 1)
-                              & (data['Category'] == category)])
-    
-    # false matches in category
-    linked_false_cat_n = len(data[(data['LinkedStatus'] == 1) & (data['LinkTruth'] == 0)
-                              & (data['Category'] == category)])    
-    
-    # missed matches in category
-    unlinked_true_cat_n = len(data[(data['LinkedStatus'] == 0) & (data['LinkTruth'] == 1)
-                                 & (data['Category'] == category)])
-
-    return (linked_n, unlinked_n, linked_true_n, linked_false_n, unlinked_true_n,
-            linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n)
-
-# Function to calculate proportions needed for effect size
-# To use with lvu_effect_size function
-
-def get_proportions(linked_true_n, linked_false_n, unlinked_true_n, linked_true_cat_n, linked_false_cat_n,
-                    unlinked_true_cat_n):
-
-    # Calculate proportion of true matches in a category / all true matches
-    prop_linked_true_cat = linked_true_cat_n / \
-        (linked_true_n) if linked_true_n > 0 else 0
-    
-    # Calculate proportion of false matches in a category / all false matches
-    prop_linked_false_cat = linked_false_cat_n / \
-        (linked_false_n) if linked_false_n > 0 else 0
-    
-
-    # Calculate proportion of missed matches in a category / all missed matches
-    prop_unlinked_true_cat = unlinked_true_cat_n / \
-        (unlinked_true_n) if unlinked_true_n > 0 else 0
-
-    return prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat
-
-# Function to calculate effect size
-# To use with lvu_effect_size function
-
-def calculate_stdiff(p1, p2):
-
-    # stdiff = (p1 - p2) / sqrt((p1 * (1 - p1) + p2 * (1 - p2)) / 2)
-    # where p1 = prop_linked_true_cat and p2 = EITHER prop_linked_false_cat 
-    # OR prop_unlinked_true_cat
-
-    # Calculate standard difference
-    stdiff = (p1 - p2) / (( (p1 * (1 - p1) + \
-        p2 * (1 - p2)) / 2) ** 0.5)
-     
-    return stdiff
-
-# Function to create and save output .csv file for effect size results
-
-def lvu_effect_output(input_file_name, category, linked_n, unlinked_n, linked_true_n, linked_false_n,
-              unlinked_true_n, linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n,
-              prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat,
-              stdiff_false, stdiff_missed
-             ):
-    
     # Define output file name
-    lvu_effect_results_file_name = input_file_name+'_effect_size_results.csv'
+    chi2_results_file_name = input_file_name+'_chi2_results.csv'
+    contingency_table_file_name = input_file_name+'_contingency_table.csv'
+    expected_frequencies_file_name = input_file_name+'_expected_frequencies.csv'
+    output_folder = input_file_name+'_output'
 
     # Make a directory for specified data set if it does not exist already
-    output_folder = input_file_name+'_output'
     os.makedirs(output_folder, exist_ok=True)
 
-    # Define file path for effect size results
-    lvu_effect_results_path = os.path.join(output_folder, lvu_effect_results_file_name)
+    # Define file path for chi2 results
+    chi2_results_path = os.path.join(output_folder, chi2_results_file_name)
 
-    # Create the dataframe for the output file
-    headers = ["Dataset", "Category", "Linked_Records", "Unlinked_Records", 
-                    "Correct_Matches", "False_Matches", "Missed_Matches", "Correct_in_Category",
-                    "False_in_Category", "Missed_in_Category", "Prop_Correct_in_Category",
-                    "Prop_False_in_Category", "Prop_Missed_in_Category", "Std_Diff_False",
-                    "Std_Diff_Missed"
-                        ]
-    values = [input_file_name, category, linked_n, unlinked_n, linked_true_n, linked_false_n,
-              unlinked_true_n, linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n,
-              prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat,
-              stdiff_false, stdiff_missed
-             ]
+    # Define the headers and corresponding values for chi2 results
+    headers = ["Chi Square", "P value", "Degrees of Freedom"]
+    values = [chi2, p, dof]
+
+    # Write chi2 results to CSV    
+    with open(chi2_results_path, mode='w', newline='') as file:
+        writer = csv.writer(file)
+        writer.writerow(headers)
+        writer.writerow(values)
+
+    # Define file path for contingency table
+    contingency_table_path = os.path.join(output_folder, contingency_table_file_name)
+
+    # Write contingency table to CSV
+    contingency_table.to_csv(contingency_table_path)
+
+    # Define file path for expected frequencies
+    expected_frequencies_path = os.path.join(output_folder, expected_frequencies_file_name)
+
+    # Write expected frequencies to CSV
+    pd.DataFrame(expected).to_csv(expected_frequencies_path)
     
-    # Rounds the proportions and effect sizes to 6 decimal places
-    values = [round(v, 6) if isinstance(v, float) else v for v in values]
 
-    df = pd.DataFrame([values], columns=headers)
+    return
 
-    # Save the dataframe as a .csv file in output folder
-    df.to_csv(lvu_effect_results_path, index=False)
-    
-    return 
+# Main function to run chi2 test on contingency table created from specified input 
+# file and categorical variables
+# would like users to be able to provide contigency table if they prefer to full data
 
-# Main function to get effect sizes 
+def lvu_chi2(input_file_name, category_1, category_2): 
+  '''
+  Performs Chi2 test on contingency table created from specified input file and categorical variables.
 
-def lvu_effect_size(input_file_name, category):
+  Parameters:
+    input_file_name (str): Name of the input CSV file (without .csv extension) located in the 'data' directory.
+    category_1 (str): Name of the first categorical variable/column in the data.
+    category_2 (str): Name of the second categorical variable/column in the data.
 
-    # Reads in data with specified file name
-    data = pd.read_csv('data/'+input_file_name+'.csv') 
+  Returns:
+    - chi2 (float): The Chi-squared statistic.
+    - p (float): The p-value of the test.
+    - dof (int): Degrees of freedom.
+    - expected (ndarray): The expected frequencies table.
+    - contingency_table (DataFrame): The contingency table used in the test.
 
-    # Get counts
-    (linked_n, unlinked_n, linked_true_n, linked_false_n, unlinked_true_n,
-        linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n) = get_counts(data, category)
+  Creates an output directory (<input_file_name>_output) and saves the following .csv files:
+    <input_file_name>_chi2_results: saves chi2, p-value, degrees of freedom
+    <input_file_name>_contingency_table: saves the contingency table
+    <input_file_name>_expected_frequencies: saves the expected frequencies table 
 
-    # Get proportions
-    prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat = get_proportions(
-        linked_true_n, linked_false_n, unlinked_true_n, linked_true_cat_n, linked_false_cat_n, 
-        unlinked_true_cat_n)
+  Input data should have at least 2 categorical variables/columns for analysis.
+    - Input data can be int (e.g., 0/1) or string (e.g., 'Linked'/'Unlinked').
+    - One of the columns should represent the linked status (whether the data in that
+    row were linked or not linked). 
+    - The other column(s) should represent categorical variables of interest to
+    investigate for potential bias.
+    - The method will ignore any columns not specified in the function call.
 
-    # Calculate effect size
+   Method assumes no missing values in the specified categorical variables/columns.
 
-    stdiff_false = calculate_stdiff(prop_linked_true_cat, prop_linked_false_cat)
-    stdiff_missed = calculate_stdiff(prop_linked_true_cat, prop_unlinked_true_cat)
+    '''
+  # Creates contingency table
+  contingency_table = create_contingency_table(input_file_name, category_1, category_2)
+  
+  # Prints contingency table. Will replace with print function for all output later
+  print(contingency_table)
+ 
+  # Performs Chi2 test
+  chi2, p, dof, expected = chi2_contingency(contingency_table)
 
-    # Create output for effect size
-
-    lvu_effect_output(input_file_name, category, linked_n, unlinked_n, linked_true_n, linked_false_n,
-              unlinked_true_n, linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n,
-              prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat,
-              stdiff_false, stdiff_missed
-             )
-
-    return (stdiff_false, stdiff_missed, linked_n, unlinked_n, linked_true_n, linked_false_n, unlinked_true_n,
-            linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n,
-            prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat)
-
-
-(stdiff_false, stdiff_missed, linked_n, unlinked_n, linked_true_n, linked_false_n, unlinked_true_n, 
-    linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n,
-    prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat) = lvu_effect_size(
-        input_file_name = "effect_data1", category = 1)
-
+  # Creates output file for chi2 results
+  lvu_chi2_output(chi2, p, dof, input_file_name, contingency_table, expected)
+  
+  return chi2, p, dof, expected, contingency_table

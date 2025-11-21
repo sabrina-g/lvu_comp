@@ -72,11 +72,11 @@ def lvu_chi2(input_file_name, category_1, category_2):
     category_2 (str): Name of the second categorical variable/column in the data.
 
   Returns:
-    chi2 (float): The Chi-squared statistic.
-    p (float): The p-value of the test.
-    dof (int): Degrees of freedom.
-    expected (ndarray): The expected frequencies table.
-    contingency_table (DataFrame): The contingency table used in the test.
+    - chi2 (float): The Chi-squared statistic.
+    - p (float): The p-value of the test.
+    - dof (int): Degrees of freedom.
+    - expected (ndarray): The expected frequencies table.
+    - contingency_table (DataFrame): The contingency table used in the test.
 
   Creates an output directory and saves the following .csv files:
     <input_file_name>_chi2_results: saves chi2, p-value, degrees of freedom
@@ -91,7 +91,7 @@ def lvu_chi2(input_file_name, category_1, category_2):
     investigate for potential bias.
     - The method will ignore any columns not specified in the function call.
 
- Method assumes no missing values in the specified categorical variables/columns.
+   Method assumes no missing values in the specified categorical variables/columns.
 
     '''
   # Creates contingency table
@@ -223,6 +223,49 @@ def lvu_effect_output(input_file_name, category, linked_n, unlinked_n, linked_tr
 # Main function to get effect sizes 
 
 def lvu_effect_size(input_file_name, category):
+
+    '''
+    Calculates the standard difference (stdiff) effect sizes for false matches and missed matches.
+      
+    Parameters:
+        input_file_name (str): Name of the input CSV file (without .csv extension) located in the
+          data directory.
+        category (int/str): The specific category value to calculate effect sizes for.
+        
+    Returns:
+        - stdiff_false (float) : Standard difference effect size for false matches.
+        - stdiff_missed (float) : Standard difference effect size for missed matches.
+        - linked_n (int): Total number of linked records.
+        - unlinked_n (int): Total number of unlinked records.
+        - linked_true_n (int): Total number of correct (true) matches.
+        - linked_false_n (int): Total number of false matches.
+        - unlinked_true_n (int): Total number of missed matches.
+        - linked_true_cat_n (int): Number of correct matches in the specified category.
+        - linked_false_cat_n (int): Number of false matches in the specified category.
+        - unlinked_true_cat_n (int): Number of missed matches in the specified category.
+        - prop_linked_true_cat (float): Proportion of correct matches in the specified category.
+        - prop_linked_false_cat (float): Proportion of false matches in the specified category.
+        - prop_unlinked_true_cat (float): Proportion of missed matches in the specified category.
+    
+    Creates an output directory and saves the following .csv file:
+        <input_file_name>_effect_size_results: saves counts, proportions, and effect sizes.
+        
+    Input data should have the following columns:
+        - LinkedStatus indicates whether the record was linked (1) or unlinked (0).
+        - LinkTruth indicates whether the record is a true match (1) or not (0).
+        - Category indicates the categorical variable of interest for effect size calculation.
+            - Integers represent different categories (e.g., 1, 2, 3) 
+        - Method will ignore all other columns. 
+
+    Method assumes no missing values in the specified columns.
+
+    Standard difference (stdiff) is calculated as:
+
+    stdiff = (p1 - p2) / sqrt((p1 * (1 - p1) + p2 * (1 - p2)) / 2)
+    where p1 = prop_linked_true_cat and p2 = EITHER prop_linked_false_cat (for comparing
+    to false matches) OR prop_unlinked_true_cat (for comparing to missed matches)
+    
+            '''
 
     # Reads in data with specified file name
     data = pd.read_csv('data/'+input_file_name+'.csv') 

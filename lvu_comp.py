@@ -78,7 +78,7 @@ def lvu_chi2(input_file_name, category_1, category_2):
     - expected (ndarray): The expected frequencies table.
     - contingency_table (DataFrame): The contingency table used in the test.
 
-  Creates an output directory and saves the following .csv files:
+  Creates an output directory (<input_file_name>_output) and saves the following .csv files:
     <input_file_name>_chi2_results: saves chi2, p-value, degrees of freedom
     <input_file_name>_contingency_table: saves the contingency table
     <input_file_name>_expected_frequencies: saves the expected frequencies table 
@@ -247,7 +247,7 @@ def lvu_effect_size(input_file_name, category):
         - prop_linked_false_cat (float): Proportion of false matches in the specified category.
         - prop_unlinked_true_cat (float): Proportion of missed matches in the specified category.
     
-    Creates an output directory and saves the following .csv file:
+    Creates an output directory (<input_file_name>_output) and saves the following .csv file:
         <input_file_name>_effect_size_results: saves counts, proportions, and effect sizes.
         
     Input data should have the following columns:
@@ -280,12 +280,10 @@ def lvu_effect_size(input_file_name, category):
         unlinked_true_cat_n)
 
     # Calculate effect size
-
     stdiff_false = calculate_stdiff(prop_linked_true_cat, prop_linked_false_cat)
     stdiff_missed = calculate_stdiff(prop_linked_true_cat, prop_unlinked_true_cat)
 
     # Create output for effect size
-
     lvu_effect_output(input_file_name, category, linked_n, unlinked_n, linked_true_n, linked_false_n,
               unlinked_true_n, linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n,
               prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat,

@@ -268,6 +268,10 @@ def lvu_effect_size(input_file_name, category):
             '''
 
     # Reads in data with specified file name
+    # For multiple data sets plan to add flags to each and then combine to create 
+    # suitable combined dataset
+    # Can handle this with if statements to cope with different numbers of input datasets
+
     data = pd.read_csv('data/'+input_file_name+'.csv') 
 
     # Get counts

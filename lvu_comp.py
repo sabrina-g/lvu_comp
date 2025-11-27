@@ -19,43 +19,48 @@ def create_contingency_table(input_file_name, category_1, category_2):
 # Creates a directory and output files for chi2 test results
 # To use in lvu_chi2 function
 
-def lvu_chi2_output(chi2, p, dof, input_file_name, contingency_table, expected):  
-
-    # Define output file name
-    chi2_results_file_name = input_file_name+'_chi2_results.csv'
-    contingency_table_file_name = input_file_name+'_contingency_table.csv'
-    expected_frequencies_file_name = input_file_name+'_expected_frequencies.csv'
-    output_folder = input_file_name+'_output'
-
-    # Make a directory for specified data set if it does not exist already
+def lvu_chi2_output(chi2, p, dof, input_file_name, category_1, category_2, contingency_table, expected):
+    # Output folder
+    output_folder = input_file_name + '_output'
     os.makedirs(output_folder, exist_ok=True)
 
-    # Define file path for chi2 results
-    chi2_results_path = os.path.join(output_folder, chi2_results_file_name)
+    # Chi2 results file path
+    chi2_results_path = os.path.join(output_folder, input_file_name + '_chi2_results.csv')
 
-    # Define the headers and corresponding values for chi2 results
-    headers = ["Chi Square", "P value", "Degrees of Freedom"]
-    values = [chi2, p, dof]
+    # Prepare row for results
+    result_row = [input_file_name, category_1, category_2, chi2, p, dof]
 
-    # Write chi2 results to CSV    
-    with open(chi2_results_path, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(headers)
-        writer.writerow(values)
+    # Check if file exists
+    file_exists = os.path.exists(chi2_results_path)
 
-    # Define file path for contingency table
-    contingency_table_path = os.path.join(output_folder, contingency_table_file_name)
+    # Read existing rows to check for duplicates
+    existing_rows = set()
+    if file_exists:
+        with open(chi2_results_path, mode='r', newline='') as file:
+            reader = csv.reader(file)
+            next(reader, None)  # Skip header
+            for row in reader:
+                if len(row) >= 3:
+                    existing_rows.add((row[0], row[1], row[2]))  # Dataset, Category 1, Category 2
 
-    # Write contingency table to CSV
-    contingency_table.to_csv(contingency_table_path)
+    # Only write a new row if this combination doesn't exist
+    if (input_file_name, category_1, category_2) not in existing_rows:
+        with open(chi2_results_path, mode='a', newline='') as file:
+            writer = csv.writer(file)
+            if not file_exists: # create the file if it doesn't already exist
+                writer.writerow(["Dataset", "Category 1", "Category 2", "Chi Square", "P value", "Degrees of Freedom"])
+            writer.writerow(result_row)
 
-    # Define file path for expected frequencies
-    expected_frequencies_path = os.path.join(output_folder, expected_frequencies_file_name)
 
-    # Write expected frequencies to CSV
-    pd.DataFrame(expected).to_csv(expected_frequencies_path)
+    # Save contingency and expected tables with descriptive names
+    contingency_filename = f"contingency_{input_file_name}_{category_1}_{category_2}.csv"
+    expected_filename = f"expected_{input_file_name}_{category_1}_{category_2}.csv"
+
+    contingency_table.to_csv(os.path.join(output_folder, contingency_filename))
+    pd.DataFrame(expected, index=contingency_table.index, columns=contingency_table.columns).to_csv(
+        os.path.join(output_folder, expected_filename)
+    )
     
-
     return
 
 # Main function to run chi2 test on contingency table created from specified input 
@@ -79,9 +84,12 @@ def lvu_chi2(input_file_name, category_1, category_2):
     - contingency_table (DataFrame): The contingency table used in the test.
 
   Creates an output directory (<input_file_name>_output) and saves the following .csv files:
-    <input_file_name>_chi2_results: saves chi2, p-value, degrees of freedom
+    <input_file_name>_chi2_results: saves dataset, category_1, category_2, chi2, p-value, degrees of freedom
     <input_file_name>_contingency_table: saves the contingency table
     <input_file_name>_expected_frequencies: saves the expected frequencies table 
+
+    - Multiple analyses run on the same dataset will be saved as new rows in chi2_results
+    - Multiple analyses will generate separate contingency and expected frequencies tables .csv files
 
   Input data should have at least 2 categorical variables/columns for analysis.
     - Input data can be int (e.g., 0/1) or string (e.g., 'Linked'/'Unlinked').

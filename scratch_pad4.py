@@ -40,11 +40,11 @@ def lvu_chi2_output(chi2, p, dof, input_file_name, category_1, category_2, conti
                 if len(row) >= 3:
                     existing_rows.add((row[0], row[1], row[2]))  # Dataset, Category 1, Category 2
 
-    # Only write if this combination doesn't exist
+    # Only write a new row if this combination doesn't exist
     if (input_file_name, category_1, category_2) not in existing_rows:
         with open(chi2_results_path, mode='a', newline='') as file:
             writer = csv.writer(file)
-            if not file_exists:
+            if not file_exists: # create the file if it doesn't already exist
                 writer.writerow(["Dataset", "Category 1", "Category 2", "Chi Square", "P value", "Degrees of Freedom"])
             writer.writerow(result_row)
 

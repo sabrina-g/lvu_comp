@@ -73,3 +73,5 @@ def lvu_chi2(input_file_name, category_1=None, category_2=None, contingency_tabl
     lvu_chi2_output(chi2, p, dof, input_file_name, category_1, category_2, contingency_table, expected)
 
     return chi2, p, dof, expected, contingency_table
+
+test_chi2 = lvu_chi2('data2', 'Grade', 'LinkedStatus')

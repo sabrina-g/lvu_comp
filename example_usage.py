@@ -11,7 +11,7 @@ from lvu_comp import lvu_chi2, lvu_effect_size
 (stdiff_false, stdiff_missed, linked_n, unlinked_n, linked_true_n, linked_false_n, unlinked_true_n, 
     linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n,
     prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat) = lvu_effect_size(
-        input_file_name = "effect_data1", category = 1)
+        input_file_name = "effect_data1", category_name = "Marital_status", category_level = 0)
 
 print(f"True matches: {linked_true_n}")
 #print(f"True matches for Category = {category}: {linked_true_cat_n}")

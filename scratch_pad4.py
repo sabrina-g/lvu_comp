@@ -74,43 +74,62 @@ def calculate_stdiff(p1, p2):
 # Function to create and save output .csv file for effect size results
 
 def lvu_effect_output(input_file_name, category_name, category_level, linked_n, unlinked_n, linked_true_n, linked_false_n,
-              unlinked_true_n, linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n,
-              prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat,
-              stdiff_false, stdiff_missed
-             ):
+                      unlinked_true_n, linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n,
+                      prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat,
+                      stdiff_false, stdiff_missed):
     
     # Define output file name
-    lvu_effect_results_file_name = input_file_name+'_effect_size_results.csv'
+    lvu_effect_results_file_name = input_file_name + '_effect_size_results.csv'
 
     # Make a directory for specified data set if it does not exist already
-    output_folder = input_file_name+'_output'
+    output_folder = input_file_name + '_output'
     os.makedirs(output_folder, exist_ok=True)
 
     # Define file path for effect size results
     lvu_effect_results_path = os.path.join(output_folder, lvu_effect_results_file_name)
 
-    # Create the dataframe for the output file
-    headers = ["Dataset", "Category", "Category_level", "Linked_Records", "Unlinked_Records", 
-                    "Correct_Matches", "False_Matches", "Missed_Matches", "Correct_in_Category",
-                    "False_in_Category", "Missed_in_Category", "Prop_Correct_in_Category",
-                    "Prop_False_in_Category", "Prop_Missed_in_Category", "Std_Diff_False",
-                    "Std_Diff_Missed"
-                        ]
-    values = [input_file_name, category_name, category_level, linked_n, unlinked_n, linked_true_n, linked_false_n,
-              unlinked_true_n, linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n,
-              prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat,
-              stdiff_false, stdiff_missed
-             ]
+    # Define headers and values
+    headers = [
+        "Dataset", "Category", "Category_level", "Linked_Records", "Unlinked_Records", 
+        "Correct_Matches", "False_Matches", "Missed_Matches", "Correct_in_Category",
+        "False_in_Category", "Missed_in_Category", "Prop_Correct_in_Category",
+        "Prop_False_in_Category", "Prop_Missed_in_Category", "Std_Diff_False",
+        "Std_Diff_Missed"
+    ]
     
-    # Rounds the proportions and effect sizes to 6 decimal places
+    values = [
+        input_file_name, category_name, category_level, linked_n, unlinked_n, linked_true_n, linked_false_n,
+        unlinked_true_n, linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n,
+        prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat,
+        stdiff_false, stdiff_missed
+    ]
+    
+    # Round numeric values to 6 decimal places
     values = [round(v, 6) if isinstance(v, float) else v for v in values]
 
-    df = pd.DataFrame([values], columns=headers)
-
-    # Save the dataframe as a .csv file in output folder
-    df.to_csv(lvu_effect_results_path, index=False)
+    # Check if file exists for this dataset
+    if os.path.exists(lvu_effect_results_path):
+        # Load existing file
+        existing_df = pd.read_csv(lvu_effect_results_path)
+        
+        # Check for duplicates based on Category and Category_level
+        duplicate = ((existing_df["Category"] == category_name) & 
+                     (existing_df["Category_level"] == category_level)).any()
+        
+        if duplicate:
+            print(f"Row with Category '{category_name}' and Category_level '{category_level}' already exists.")
+            return
+        
+        # Append new row
+        new_row_df = pd.DataFrame([values], columns=headers)
+        updated_df = pd.concat([existing_df, new_row_df], ignore_index=True)
+        updated_df.to_csv(lvu_effect_results_path, index=False)
     
-    return 
+    else:
+        # Create new file with header
+        new_df = pd.DataFrame([values], columns=headers)
+        new_df.to_csv(lvu_effect_results_path, index=False)
+
 
 # Main function to get effect sizes 
 
@@ -194,4 +213,4 @@ def lvu_effect_size(input_file_name, category_name, category_level):
 (stdiff_false, stdiff_missed, linked_n, unlinked_n, linked_true_n, linked_false_n, unlinked_true_n, 
     linked_true_cat_n, linked_false_cat_n, unlinked_true_cat_n,
     prop_linked_true_cat, prop_linked_false_cat, prop_unlinked_true_cat) = lvu_effect_size(
-        input_file_name = "effect_data1", category_name = "Category", category_level = 1)
+        input_file_name = "effect_data1", category_name = "Marital_status", category_level = 0)

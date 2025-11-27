@@ -15,6 +15,7 @@ def create_contingency_table(input_file_name, category_1, category_2):
     
     return contingency_table
 
+
 def lvu_chi2_output(chi2, p, dof, input_file_name, category_1, category_2, contingency_table, expected):
     # Output folder
     output_folder = input_file_name + '_output'
@@ -26,13 +27,27 @@ def lvu_chi2_output(chi2, p, dof, input_file_name, category_1, category_2, conti
     # Prepare row for results
     result_row = [input_file_name, category_1, category_2, chi2, p, dof]
 
-    # Append results to CSV (create if doesn't exist)
+    # Check if file exists
     file_exists = os.path.exists(chi2_results_path)
-    with open(chi2_results_path, mode='a', newline='') as file:
-        writer = csv.writer(file)
-        if not file_exists:
-            writer.writerow(["Dataset", "Variable 1", "Variable 2", "Chi Square", "P value", "Degrees of Freedom"])
-        writer.writerow(result_row)
+
+    # Read existing rows to check for duplicates
+    existing_rows = set()
+    if file_exists:
+        with open(chi2_results_path, mode='r', newline='') as file:
+            reader = csv.reader(file)
+            next(reader, None)  # Skip header
+            for row in reader:
+                if len(row) >= 3:
+                    existing_rows.add((row[0], row[1], row[2]))  # Dataset, Category 1, Category 2
+
+    # Only write if this combination doesn't exist
+    if (input_file_name, category_1, category_2) not in existing_rows:
+        with open(chi2_results_path, mode='a', newline='') as file:
+            writer = csv.writer(file)
+            if not file_exists:
+                writer.writerow(["Dataset", "Category 1", "Category 2", "Chi Square", "P value", "Degrees of Freedom"])
+            writer.writerow(result_row)
+
 
     # Save contingency and expected tables with descriptive names
     contingency_filename = f"contingency_{input_file_name}_{category_1}_{category_2}.csv"

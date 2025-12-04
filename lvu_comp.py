@@ -85,8 +85,8 @@ def lvu_chi2(input_file_name, category_1, category_2):
 
   Creates an output directory (<input_file_name>_output) and saves the following .csv files:
     <input_file_name>_chi2_results: saves dataset, category_1, category_2, chi2, p-value, degrees of freedom
-    <input_file_name>_contingency_table: saves the contingency table
-    <input_file_name>_expected_frequencies: saves the expected frequencies table 
+    <input_file_name_category1_category2>_contingency_table: saves the contingency table
+    <input_file_name_category1_category2>_expected_frequencies: saves the expected frequencies table 
 
     - Multiple analyses run on the same dataset will be saved as new rows in chi2_results
     - Multiple analyses will generate separate contingency and expected frequencies tables .csv files
@@ -275,7 +275,9 @@ def lvu_effect_size(input_file_name, category_name, category_level):
         - prop_unlinked_true_cat (float): Proportion of missed matches in the specified category.
     
     Creates an output directory (<input_file_name>_output) and saves the following .csv file:
-        <input_file_name>_effect_size_results: saves counts, proportions, and effect sizes.
+        - <input_file_name>_effect_size_results: saves category, category level, counts, proportions, 
+        and effect sizes.
+        - Multiple analyses run on the same dataset will be saved as new rows in effect_size_results.
         
     Input data should have the following columns:
         - LinkedStatus indicates whether the record was linked (1) or unlinked (0).

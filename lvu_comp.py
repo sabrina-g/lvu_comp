@@ -7,12 +7,10 @@ from scipy.stats import chi2_contingency
 # To use in lvu_chi2 function
 # may want to read in data in separate function later
 
-def create_contingency_table(input_file_name, category_1, category_2):
-  # Reads in data with specified file name
-  data = pd.read_csv('data/'+input_file_name+'.csv') 
-  
+def create_contingency_table(input_dataframe, category_1, category_2):
+ 
   # Creates contingency table with specified categorical variables
-  contingency_table = pd.crosstab(data[category_1], data[category_2])
+  contingency_table = pd.crosstab(input_dataframe[category_1], input_dataframe[category_2])
    
   return contingency_table
 
@@ -67,12 +65,13 @@ def lvu_chi2_output(chi2, p, dof, input_file_name, category_1, category_2, conti
 # file and categorical variables
 # would like users to be able to provide contigency table if they prefer to full data
 
-def lvu_chi2(input_file_name, category_1, category_2): 
+def lvu_chi2(input_dataframe, input_file_name, category_1, category_2): 
   '''
-  Performs Chi2 test on contingency table created from specified input file and categorical variables.
+  Performs Chi2 test on contingency table created from specified input dataframe and categorical variables.
 
   Parameters:
-    input_file_name (str): Name of the input CSV file (without .csv extension) located in the 'data' directory.
+    input_dataframe (DataFrame): The input DataFrame.
+    input_file_name (str): Name of the input file used for output file naming.
     category_1 (str): Name of the first categorical variable/column in the data.
     category_2 (str): Name of the second categorical variable/column in the data.
 
@@ -103,7 +102,7 @@ def lvu_chi2(input_file_name, category_1, category_2):
 
     '''
   # Creates contingency table
-  contingency_table = create_contingency_table(input_file_name, category_1, category_2)
+  contingency_table = create_contingency_table(input_dataframe, category_1, category_2)
   
   # Prints contingency table. Will replace with print function for all output later
   print(contingency_table)

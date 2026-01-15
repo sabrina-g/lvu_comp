@@ -1,4 +1,4 @@
-# d = (p1 - p2) / sqrt((p1 * (1 - p1) + p2 * (1 - p2)) / 2)
+# trying to add pyspark capabilities to lvu_chi2 function
 
 import pandas as pd
 from lvu_comp import lvu_chi2, lvu_effect_size
@@ -8,18 +8,40 @@ import csv
 import os
 import pandas as pd
 from scipy.stats import chi2_contingency
+from pyspark.sql import SparkSession
+from pyspark.sql.utils import AnalysisException
 
 # Creates a contingency table with specified input file and categorical variables
 # To use in lvu_chi2 function
 # may want to read in data in separate function later
 
 def create_contingency_table(input_dataframe, category_1, category_2):
- 
-  # Creates contingency table with specified categorical variables
-  contingency_table = pd.crosstab(input_dataframe[category_1], input_dataframe[category_2])
-   
-  return contingency_table
 
+  """
+    Create a contingency table (crosstab) between two categorical columns in a PySpark DataFrame.
+
+    Args:
+        input_dataframe (DataFrame): Input PySpark DataFrame.
+        category_1 (str): First column name (rows).
+        category_2 (str): Second column name (columns).
+
+    Returns:
+        contingency_table: Contingency table with counts.
+    """
+ # Validate inputs
+  if not category_1 or not category_2:
+      raise ValueError("Both column names must be provided.")
+  if category_1 not in input_dataframe.columns or category_2 not in input_dataframe.columns:
+      raise ValueError(f"Columns '{category_1}' and/or '{category_2}' not found in DataFrame.")
+
+  try:
+      # Create contingency table
+      contingency_table = input_dataframe.crosstab(category_1, category_2)
+      return contingency_table
+  except AnalysisException as e:
+      raise RuntimeError(f"Error creating contingency table: {e}")
+  
+  
 # Creates a directory and output files for chi2 test results
 # To use in lvu_chi2 function
 
@@ -76,7 +98,7 @@ def lvu_chi2(input_dataframe, input_file_name, category_1, category_2):
   Performs Chi2 test on contingency table created from specified input dataframe and categorical variables.
 
   Parameters:
-    input_dataframe (DataFrame): The input DataFrame.
+    input_dataframe (DataFrame): A PySpark DataFrame.
     input_file_name (str): Name of the input file used for output file naming.
     category_1 (str): Name of the first categorical variable/column in the data.
     category_2 (str): Name of the second categorical variable/column in the data.
@@ -125,6 +147,13 @@ def lvu_chi2(input_dataframe, input_file_name, category_1, category_2):
 data2 = pd.read_csv('data/data2.csv') 
 
 # Example usage of lvu_chi2 function from lvu_comp 
+
+
+# Create a SparkSession
+spark = SparkSession.builder.appName("CSV Example").getOrCreate()
+
+# Read a CSV file
+data2 = spark.read.option("header", True).option("inferSchema", True).csv("/data/data2.csv")
 
 test_chi2 = lvu_chi2(data2, 'data2', 'Grade', 'LinkedStatus')
 print(test_chi2)

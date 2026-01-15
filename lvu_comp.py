@@ -111,7 +111,7 @@ def lvu_chi2(input_dataframe, input_file_name, category_1, category_2):
   chi2, p, dof, expected = chi2_contingency(contingency_table)
 
   # Creates output file for chi2 results
-  lvu_chi2_output(chi2, p, dof, input_file_name, contingency_table, expected)
+  lvu_chi2_output(chi2, p, dof, input_file_name, category_1, category_2, contingency_table, expected)
   
   return chi2, p, dof, expected, contingency_table
 

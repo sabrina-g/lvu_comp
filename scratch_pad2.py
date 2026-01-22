@@ -1,33 +1,56 @@
-import pandas as pd
+# co pilot example of psypark crosstabs
 
+from pyspark.sql import SparkSession
+from pyspark.sql.utils import AnalysisException
 
-input_file_name = 'effect_data1'
-data = pd.read_csv('data/'+input_file_name+'.csv')
+def create_contingency_table(df, col1, col2):
+    """
+    Create a contingency table (crosstab) between two categorical columns in a PySpark DataFrame.
 
-df_linked = data[data['LinkedStatus'] == 1]
-df_unlinked = data[data['LinkedStatus'] == 0]
+    Args:
+        df (DataFrame): Input PySpark DataFrame.
+        col1 (str): First column name (rows).
+        col2 (str): Second column name (columns).
 
-# True matches assuming 1 = true match
-df_linked_true = df_linked[df_linked['LinkTruth'] == 1]
+    Returns:
+        DataFrame: Contingency table with counts.
+    """
+    # Validate inputs
+    if not col1 or not col2:
+        raise ValueError("Both column names must be provided.")
+    if col1 not in df.columns or col2 not in df.columns:
+        raise ValueError(f"Columns '{col1}' and/or '{col2}' not found in DataFrame.")
 
-# Missed matches assuming 0 = false match
-df_unlinked_false = df_unlinked[df_unlinked['LinkTruth'] == 0]
+    try:
+        # Create contingency table
+        contingency_df = df.crosstab(col1, col2)
+        return contingency_df
+    except AnalysisException as e:
+        raise RuntimeError(f"Error creating contingency table: {e}")
 
-# Numbers of linked and unlinked records
-linked_n = len(df_linked)
-unlinked_n = len(df_unlinked)
+# ------------------ Example Usage ------------------
+if __name__ == "__main__":
+    spark = SparkSession.builder \
+        .appName("ContingencyTableExample") \
+        .getOrCreate()
 
-# True matches within specified category, e.g., Category = 1
-df_linked_true_cat_1 = df_linked_true[df_linked_true['Category'] == 1]
+    # Sample data
+    data = [
+        ("A", "X"),
+        ("A", "Y"),
+        ("B", "X"),
+        ("B", "X"),
+        ("A", "X"),
+        ("C", "Y"),
+    ]
+    columns = ["Category1", "Category2"]
 
-# Missed matches within specified category, e.g., Category = 1
-df_unlinked_false_cat_1 = df_unlinked_false[df_unlinked_false['Category'] == 1]
+    df = spark.createDataFrame(data, columns)
 
-# Number of true matches within specified category
-linked_true_cat_1_n = len(df_linked_true_cat_1)
-unlinked_false_cat_1_n = len(df_unlinked_false_cat_1)
+    # Create contingency table
+    contingency_df = create_contingency_table(df, "Category1", "Category2")
 
+    # Show result
+    contingency_df.show()
 
-print(f"Number of true matches in category 1: {linked_true_cat_1_n}")
-print(f"Number for missed matches in category 1: {unlinked_false_cat_1_n}")
-print(f"Number of linked records: {linked_n}")
+    spark.stop()

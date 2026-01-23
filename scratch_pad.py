@@ -144,16 +144,19 @@ def lvu_chi2(input_dataframe, input_file_name, category_1, category_2):
   return chi2, p, dof, expected, contingency_table
 
 
-data2 = pd.read_csv('data/data2.csv') 
+# data2 = pd.read_csv('data/data2.csv') 
 
 # Example usage of lvu_chi2 function from lvu_comp 
 
 
 # Create a SparkSession
-spark = SparkSession.builder.appName("CSV Example").getOrCreate()
+spark = SparkSession.builder \
+    .appName("CSV Example") \
+    .master("local[*]") \
+    .getOrCreate() 
 
 # Read a CSV file
-data2 = spark.read.option("header", True).option("inferSchema", True).csv("/data/data2.csv")
+data2 = spark.read.option("header", True).option("inferSchema", True).csv("file:///data/data2.csv")
 
 test_chi2 = lvu_chi2(data2, 'data2', 'Grade', 'LinkedStatus')
 print(test_chi2)
